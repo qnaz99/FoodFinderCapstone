@@ -3692,7 +3692,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^4.0.0 || ^5.0.0", "@typescript-eslint/eslint-plugin@^5.27.0", "@typescript-eslint/eslint-plugin@^5.5.0", "@typescript-eslint/eslint-plugin@^5.52.0":
+"@typescript-eslint/eslint-plugin@^4.0.0 || ^5.0.0", "@typescript-eslint/eslint-plugin@^5.27.0", "@typescript-eslint/eslint-plugin@^5.5.0":
   "integrity" "sha512-lHazYdvYVsBokwCdKOppvYJKaJ4S41CgKBcPvyd0xjZNbvQdhn/pnJlGtQksQ/NhInzdaeaSarlBjDXHuclEbg=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.52.0.tgz"
   "version" "5.52.0"
@@ -3715,7 +3715,7 @@
   dependencies:
     "@typescript-eslint/utils" "5.52.0"
 
-"@typescript-eslint/parser@^5.0.0", "@typescript-eslint/parser@^5.27.0", "@typescript-eslint/parser@^5.5.0", "@typescript-eslint/parser@^5.52.0":
+"@typescript-eslint/parser@^5.0.0", "@typescript-eslint/parser@^5.27.0", "@typescript-eslint/parser@^5.5.0":
   "integrity" "sha512-e2KiLQOZRo4Y0D/b+3y08i3jsekoSkOYStROYmPUnGMEoA0h+k2qOH5H6tcjIc68WDvGwH+PaOrP1XRzLJ6QlA=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-5.52.0.tgz"
   "version" "5.52.0"

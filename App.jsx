@@ -41,11 +41,11 @@ export default function App() {
       <ImageBackground source="https://14thlane.ro/files/pages/1/OurStory2.webp" resizeMode="cover" style={styles.image}>
         <Text style={styles.logoText}>FoodFinder</Text>
         <View style={styles.button}>
-          <LoginButton name="google" iconColor= "black" text="Login with Google" backgroundColor= "white" textColor="blue"/>
+          <LoginButton name="google" iconColor= "black" text="Login with Google" backgroundColor= "white" textColor="blue" onPress={() => Linking.openURL('https://accounts.google.com/signin')}/>
           <br/>
-          <LoginButton name="facebook" iconColor= "white" text="Login with Facebook" backgroundColor= "#3b5998" textColor="white"/>
+          <LoginButton name="facebook" iconColor= "white" text="Login with Facebook" backgroundColor= "#3b5998" textColor="white" onPress={() => alert("Not set up")}/>
           <br/>
-          <LoginButton name="apple" iconColor= "white" text="Login with Apple" backgroundColor= "black" textColor="white"/>
+          <LoginButton name="apple" iconColor= "white" text="Login with Apple" backgroundColor= "black" textColor="white" onPress={() => alert("Not set up")}/>
         </View>
       </ImageBackground>
     </View>

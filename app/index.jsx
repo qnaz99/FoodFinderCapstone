@@ -12,6 +12,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const GOOGLE_GUID = '276689317757-4bf5mu11n0bj1c9hk538mg6ah14d8e9k.apps.googleusercontent.com';
 
+WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
   const [request, response, promptAsync] = Google.useAuthRequest({

@@ -5,6 +5,12 @@
       "bundler": "metro"
     },
     "name": "FoodFinder",
+    "plugins": [[
+      "expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }
+    ]],
     "slug": "FoodFinder"
   }
 }

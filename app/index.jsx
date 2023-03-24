@@ -5,7 +5,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { TouchableOpacity } from 'react-native-web';
-import LoginButton from '../assets/app/LoginButton';
+import LoginButton from '../assets/App/LoginButton';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { GOOGLE_GUID } from "@env"
@@ -15,7 +15,6 @@ const googleGuid = GOOGLE_GUID; // necessary due to race condition against react
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
-  console.log(GOOGLE_GUID)
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: googleGuid,
   });

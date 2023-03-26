@@ -1,87 +1,101 @@
-import { StatusBar } from 'expo-status-bar';
+import React, { useCallback, useRef, useState, useEffect, useMemo, Component, createRef } from 'react';
 import {
-  StyleSheet, Text, View, Image, ImageBackground, Dimensions, Linking,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { useFonts } from 'expo-font';
-import { TouchableOpacity } from 'react-native-web';
-import LoginButton from '../assets/App/LoginButton';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import { GOOGLE_GUID } from "@env"
+    FlatList, StyleSheet, Text, View, Image, ImageBackground, Dimensions, Linking,
+  } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import MapView, { Marker, Region, hello } from 'react-native-maps';
+import { Searchbar, Modal } from 'react-native-paper';
+import * as Location from 'expo-location';
+import axios from 'axios';
+import { YELP_API_KEY, geolocationDbUrl } from "@env";
 
-const googleGuid = GOOGLE_GUID; // necessary due to race condition against react-native-dotenv
 
-WebBrowser.maybeCompleteAuthSession();
 
-export default function App() {
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: googleGuid,
-  });
-  const [fontsLoaded] = useFonts({
-    Allison: require('./../assets/fonts/Allison.ttf'),
-  });
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    image: {
-      flex: 1,
-      justifyContent: 'center',
-      resizeMode: 'cover',
-    },
-    logoText: {
-      position: 'relative',
-      color: 'white',
-      fontFamily: 'Allison',
-      fontSize: 130,
-      zIndex: 3,
-      elevation: 3,
-      textAlign: 'center',
-      top: -Dimensions.get('window').height / 6,
-    },
-    button: {
-      size: 50,
-      width: Dimensions.get('window').width * 0.8,
-      alignSelf: 'center',
-    },
-  });
+
+
+export default function Main() {
+
+    const [longitude, setLongitude] = useState(null);
+    const [latitude, setLatitude] = useState(null);
+    const [input, setInput] = useState("");
+    const [results, setResults] = useState([])
+
+    // navigator.geolocation.getCurrentPosition(
+    //     (position) => {
+    //         setLong(position.coords.longitude),
+    //         setLat(position.coords.latitude)
+    //     }
+    // )
+
+    useEffect(() => {(async () => {
+        // let location = await Location.getCurrentPositionAsync({});
+        // setLatitude(location.coords.latitude);
+        // setLongitude(location.coords.longitude);
+        // if (latitude && longitude) return;
+        const response = await axios.get("https://geolocation-db.com/json/");
+        if (response.data && response.data.latitude && response.data.longitude) {
+            setLatitude(response.data.latitude);
+            setLongitude(response.data.longitude);  
+        }
+        return  
+    })();}, []);
+
+    async function getResults(text){
+        const response = await axios.get("https://api.yelp.com/v3/businesses/search", {
+            headers: {
+                Authorization: `Bearer ${YELP_API_KEY}`
+            },
+            params: {
+                    term: text,
+                    latitude: latitude,
+                    longitude: longitude,
+                    categories: ['restaurants', 'bars'],
+                    radius: 5000,
+                    limit: 5
+                }
+        });
+        if(response.data.businesses){
+            setResults(response.data.businesses)
+        }
+    }
+
+    
 
   return (
-      <View style={styles.container}>
-        <StatusBar />
-        <ImageBackground source="https://14thlane.ro/files/pages/1/OurStory2.webp" resizeMode="cover" style={styles.image}>
-          <Text style={styles.logoText}>FoodFinder</Text>
-          <View style={styles.button}>
-            <LoginButton name="google" iconColor="black" text="Login with Google" backgroundColor="white" textColor="blue" onPress={() => promptAsync()} />
-            <br />
-            <LoginButton name="facebook" iconColor="white" text="Login with Facebook" backgroundColor="#3b5998" textColor="white" onPress={() => alert('Not set up')} />
-            <br />
-            <LoginButton name="apple" iconColor="white" text="Login with Apple" backgroundColor="black" textColor="white" onPress={() => alert('Not set up')} />
-          </View>
-        </ImageBackground>
-      </View>
+    <View style={styles.container}>
+        <Searchbar style={styles.searchbar} placeholder={"What are you craving?"} value={input} onChangeText={(text) => {
+					setInput(text);
+                    getResults(text)
+				}}/>
+      {latitude && longitude && <MapView
+        provider="google"
+        style={{ flex: 1, width: '100%', zIndex: -1 }}
+        googleMapsApiKey={"AIzaSyA3Tm7zj5CX0sEhD_wJdp6KXv2DK_LAHZc"}
+        region={{latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}}
+        showsUserLocation={true}
+      >
+        {/* <FlatList
+            data={results}
+            
+	    />  */}
+      </MapView>}
+      <StatusBar style="auto" /> 
+    </View>
   );
-}
+} 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center', 
   },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
+  searchbar:{
+    width: Dimensions.get('window').width * 0.8, 
+    border: '5px solid white',
+    position: 'absolute',
+    top: Dimensions.get('window').height * 0.07
+  }
+
 });

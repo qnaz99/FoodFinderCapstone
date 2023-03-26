@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, ImageBackground, Dimensions, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts } from 'expo-font'
-import { TouchableOpacity } from 'react-native-web';
+import { TouchableOpacity } from 'react-native';
 
 export default function LoginButton(props) {
     return(

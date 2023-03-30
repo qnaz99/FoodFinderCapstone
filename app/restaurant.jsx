@@ -6,6 +6,8 @@ import {
 import {
   Button, List, Checkbox, Title, Subheading, Divider, IconButton,
 } from 'react-native-paper';
+import { useSearchParams } from "expo-router";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
 });
 
 function Restaurant() {
+  const { user, extra } = useSearchParams();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [menu, setMenu] = useState([

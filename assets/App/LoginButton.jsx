@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Image, ImageBackground, Dimensions, Linking } f
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts } from 'expo-font'
 import { TouchableOpacity } from 'react-native';
+import { Link } from "expo-router";
+
 
 export default function LoginButton(props) {
     return(
@@ -10,9 +12,11 @@ export default function LoginButton(props) {
         <TouchableOpacity  onPress={props.onPress} style={{backgroundColor:props.backgroundColor, borderRadius: 9, height:Dimensions.get('window').height * 0.06 }}>
             <View style={{flexDirection: 'row', paddingTop:Dimensions.get('window').height * 0.015}}>
                 <Icon name={props.name} color={props.iconColor} size={30} style={{paddingLeft:10}}></Icon>
-                <Text style={{ paddingLeft: 15, color: props.textColor}}>
+                <Link href='/main'>
+                <Text style={{ color: props.textColor}}>
                     {props.text}
                 </Text>
+                </Link>
             </View>
         </TouchableOpacity>
     )   

@@ -10,8 +10,15 @@ import * as Google from 'expo-auth-session/providers/google';
 import { GOOGLE_GUID } from "@env"
 import * as SplashScreen from 'expo-splash-screen';
 import { Link } from "expo-router";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import  Main  from './Main.jsx';
+import Restaurant from './Restaurant.jsx';
 
 
+
+
+const Stack = createNativeStackNavigator();
 
 const googleGuid = GOOGLE_GUID; // necessary due to race condition against react-native-dotenv
 
@@ -19,7 +26,7 @@ SplashScreen.preventAutoHideAsync();
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function App() {
+function Login() {
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_GUID,
     iosClientId: '276689317757-pl1dm02l981r5cll4kvq5p5f0sndatkn.apps.googleusercontent.com',
@@ -103,3 +110,18 @@ const styles = StyleSheet.create({
     color: "#38434D",
   },
 });
+
+
+export default function App() {
+  return (
+    
+      <Stack.Navigator screenOptions={{
+        headerShown: false
+      }}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="Restaurant" component={Restaurant} />
+      </Stack.Navigator>
+    
+  );
+}

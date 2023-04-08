@@ -1,13 +1,15 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, View, Alert, Image, Text,
 } from 'react-native';
 import {
   Button, List, Checkbox, Title, Subheading, Divider, IconButton,
 } from 'react-native-paper';
+import axios from 'axios';
 import { useSearchParams } from "expo-router";
-import { useNavigation } from "expo-router";
+import { FOURSQUARE_API_KEY  } from "@env";
+
 
 
 
@@ -39,11 +41,28 @@ const styles = StyleSheet.create({
 
 });
 
-function Restaurant() {
-  const navigation = useNavigation();
+function Restaurant({ route, navigation }) {
+  const id = route.params.id
   const { user, extra } = useSearchParams();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
+  useEffect(() => {(async () => {
+    if(id){
+      console.log("id: ", id)
+      const options = {
+        headers: {
+          accept: 'application/json',
+          Authorization: FOURSQUARE_API_KEY
+        },
+        params: {
+          fsq_id: id,
+        }
+      };
+      const response = await axios.get("https://api.foursquare.com/v3/places/match", options);
+    }
+  })();}, []);
+
+  
   const [menu, setMenu] = useState([
     {
       id: 1,
@@ -119,7 +138,7 @@ function Restaurant() {
   const renderMenu = () => (
     <>
       <List.Section>
-        <List.Subheader onPress={() => navigation.goBack()} >Menu</List.Subheader>
+        <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
         {menu.map((item) => (
           <List.Item
             key={item.id}

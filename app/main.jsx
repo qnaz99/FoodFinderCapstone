@@ -9,10 +9,8 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import { Link } from "expo-router";
 import { useNavigation } from "expo-router";
-import { Restaurant } from './Restaurant.jsx';
-
-
-import { YELP_API_KEY, FOURSQUARE_API_KEY } from "@env";
+import Restaurant from './Restaurant.jsx';
+import { FOURSQUARE_API_KEY  } from "@env";
 
 const ItemSeparator = ({ title }) => (
   <View
@@ -69,7 +67,7 @@ export default function Main() {
       const options = {
         headers: {
           accept: 'application/json',
-          Authorization: 'fsq3Fcizh8BbV7Okn7EbZKcVs+6KPtMq2lAI/vXYJf+wkHI='
+          Authorization: FOURSQUARE_API_KEY
         },
         params: {
           query: text,
@@ -146,11 +144,7 @@ export default function Main() {
             data={results}
 
             renderItem={({item}) => (
-              <View>
-                  {/* <Text onPress={() => navigation.navigate('/restaurant')}>{item.name}, <Text style={{color: 'gray'}}>{item.location.address1}</Text></Text> */}
-
-                  <View style={{backgroundColor: 'white'}}><Text onPress={() => navigation.navigate('Restaurant')} style={{fontSize: 19}}>{item.name}, <Text style={{color: 'gray'}}>{item.location.address}</Text></Text></View>
-              </View>
+                <View style={{backgroundColor: 'white'}}><Text onPress={() => navigation.navigate('Restaurant', {id: item.fsq_id})} style={{fontSize: 19}}>{item.name}, <Text style={{color: 'gray'}}>{item.location.address}</Text></Text></View>
             )}
             ItemSeparatorComponent={ItemSeparator}
 	        />  }

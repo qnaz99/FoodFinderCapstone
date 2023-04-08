@@ -9,7 +9,7 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import { Link } from "expo-router";
 import { useNavigation } from "expo-router";
-//import { Restaurant } from './restaurant.jsx';
+import { Restaurant } from './Restaurant.jsx';
 
 
 import { YELP_API_KEY, FOURSQUARE_API_KEY } from "@env";
@@ -26,6 +26,7 @@ const ItemSeparator = ({ title }) => (
 
 
 function renderMenu(){
+  console.log("rendering menu")
   return Restaurant
 }
 
@@ -148,7 +149,7 @@ export default function Main() {
               <View>
                   {/* <Text onPress={() => navigation.navigate('/restaurant')}>{item.name}, <Text style={{color: 'gray'}}>{item.location.address1}</Text></Text> */}
 
-                  <Link style={{backgroundColor: 'white', fontSize: 19}} href="/restaurant/"><Text>{item.name}, <Text style={{color: 'gray'}}>{item.location.address}</Text></Text></Link>
+                  <View style={{backgroundColor: 'white'}}><Text onPress={() => navigation.navigate('Restaurant')} style={{fontSize: 19}}>{item.name}, <Text style={{color: 'gray'}}>{item.location.address}</Text></Text></View>
               </View>
             )}
             ItemSeparatorComponent={ItemSeparator}

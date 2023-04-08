@@ -7,6 +7,8 @@ import {
   Button, List, Checkbox, Title, Subheading, Divider, IconButton,
 } from 'react-native-paper';
 import { useSearchParams } from "expo-router";
+import { useNavigation } from "expo-router";
+
 
 
 const styles = StyleSheet.create({
@@ -38,6 +40,7 @@ const styles = StyleSheet.create({
 });
 
 function Restaurant() {
+  const navigation = useNavigation();
   const { user, extra } = useSearchParams();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -116,7 +119,7 @@ function Restaurant() {
   const renderMenu = () => (
     <>
       <List.Section>
-        <List.Subheader>Menu</List.Subheader>
+        <List.Subheader onPress={() => navigation.goBack()} >Menu</List.Subheader>
         {menu.map((item) => (
           <List.Item
             key={item.id}

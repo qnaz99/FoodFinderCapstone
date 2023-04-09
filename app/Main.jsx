@@ -4,7 +4,7 @@ import {
   } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
-import { Checkbox, Modal, Portal, IconButton, Searchbar, Provider  } from 'react-native-paper';
+import { Checkbox, Modal, Portal, IconButton, Searchbar, Provider, List } from 'react-native-paper';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { useNavigation } from "expo-router";
@@ -27,7 +27,6 @@ function renderMenu(){
   return Restaurant
 }
 
-
 export default function Main() {
     const navigation = useNavigation();
     const [longitude, setLongitude] = useState(null);
@@ -41,6 +40,45 @@ export default function Main() {
     const [withMenusOnly, setWithMenusOnly] = useState(false);
     const [filterVisible, setFiltersVisible] = useState(false);
     const [menus, setMenus] = useState([]);
+    const [halal, setHalal] = useState(false);
+    const [kosher, setKosher] = useState(false);
+    const [vegan, setVegan] = useState(false);
+
+
+    const handleHalalChange = () => {
+      setHalal(!halal)
+      if(!halal){
+        setKosher(false)
+        setVegan(false)
+        setCategories("13191")
+        setResults([])
+        return
+      }
+      setCategories("13000")
+    }
+    const handleKosherChange = () => {
+      setKosher(!kosher)
+      if(!kosher){
+        setHalal(false)
+        setVegan(false)
+        setCategories("13287")
+        setResults([])
+        return
+      }
+      setCategories("13000")
+    }
+    const handleVeganChange = () => {
+      setVegan(!vegan)
+      if(!vegan){
+        setHalal(false)
+        setKosher(false)
+        setResults([])
+        setCategories("13377")
+        return
+      }
+      setCategories("13000")
+    }
+
 
     useEffect(() => {(async () => {
       try{
@@ -154,10 +192,32 @@ export default function Main() {
         <Modal visible={filterVisible} onDismiss={() => setFiltersVisible(false)} contentContainerStyle={styles.filterModal}>
           <Checkbox.Item
             status={withMenusOnly ? 'checked' : 'unchecked'}
-            onPress={() => setWithMenusOnly(!withMenusOnly)}
+            onPress={() => {
+              setWithMenusOnly(!withMenusOnly);
+              setInput("");
+              setResults([]);
+              console.log(withMenusOnly)
+            }}
             label="Only show restaurants with menu data"
           >
           </Checkbox.Item>
+          <List.Accordion title={'Dietary Restrictions'}>
+            <Checkbox.Item 
+              label='Halal'
+              status={halal ? 'checked' : 'unchecked'}
+              onPress={handleHalalChange}
+            />
+            <Checkbox.Item 
+              label='Kosher'
+              status={kosher ? 'checked' : 'unchecked'}
+              onPress={handleKosherChange}
+            />
+            <Checkbox.Item 
+              label='Vegan/Vegetarian'
+              status={vegan ? 'checked' : 'unchecked'}
+              onPress={handleVeganChange}
+            />
+          </List.Accordion>
         </Modal>
       </Portal>
       

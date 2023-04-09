@@ -52,7 +52,8 @@ function Restaurant({ route, navigation }) {
     }
     try{
       const menuResponse = await axios.get(`https://api.foursquare.com/v2/venues/${id}/menu`, menuOptions)
-      setMenuData(menuResponse.data.response.menu.menus.items)
+      menuResponse.data.response.menu.menus.items ? setMenuData(menuResponse.data.response.menu.menus.items) : setMenuData([])
+      return
     }
     catch(e){
       console.log(e.response.data)
@@ -142,7 +143,7 @@ function Restaurant({ route, navigation }) {
     <Text/>
     <Text/>
     <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
-    { menuData.map((item) => (  
+    {menuData.map((item) => (  
       <List.Accordion title={item.name}>
         {menu.map((item) => (
           <List.Item

@@ -21,6 +21,10 @@ const ItemSeparator = ({ title }) => (
   />
 );
 
+const ALL_RESTAURANTS_CODE = "13000"
+const HALAL_CODE = "13191"
+const KOSHER_CODE = "13287"
+const VEGAN_CODE = "13377"
 
 function renderMenu(){
   console.log("rendering menu")
@@ -33,10 +37,13 @@ export default function Main() {
     const [latitude, setLatitude] = useState(null);
     const [input, setInput] = useState("");
     const [results, setResults] = useState([]);
-    const [categories, setCategories] = useState("13000");
+    const [categories, setCategories] = useState(ALL_RESTAURANTS_CODE);
     const [latitudeDelta, setLatitudeDelta] = useState(0.0922);
     const [longitudeDelta, setLongitudeDelta] = useState(0.0421);
     const [sort, setSort] = useState("distance");
+    const [distance, setDistance] = useState(true)
+    const [rating, setRating] = useState(false)
+    const [relevance, setRelevance] = useState(false)
     const [withMenusOnly, setWithMenusOnly] = useState(false);
     const [filterVisible, setFiltersVisible] = useState(false);
     const [menus, setMenus] = useState([]);
@@ -44,17 +51,46 @@ export default function Main() {
     const [kosher, setKosher] = useState(false);
     const [vegan, setVegan] = useState(false);
 
+    const handleChangeDistance = () => {
+      if(!distance){
+        setDistance(true)
+        setRating(false)
+        setRelevance(false)
+        setSort("distance")
+        setResults([])
+      }
+    }
+    const handleChangeRating = () => {
+      if(!rating){
+        setDistance(false)
+        setRating(true)
+        setRelevance(false)
+        setResults([])
+        setSort("rating")
+      }
+    }
+    const handleChangeRelevance = () => {
+      if(!relevance){
+        setDistance(false)
+        setRating(false)
+        setRelevance(true)
+        setResults([])
+        setSort("relevance")
+      }
+    }
+
+
 
     const handleHalalChange = () => {
       setHalal(!halal)
       if(!halal){
         setKosher(false)
         setVegan(false)
-        setCategories("13191")
+        setCategories(HALAL_CODE)
         setResults([])
         return
       }
-      setCategories("13000")
+      setCategories(ALL_RESTAURANTS_CODE)
     }
     const handleKosherChange = () => {
       setKosher(!kosher)
@@ -65,7 +101,7 @@ export default function Main() {
         setResults([])
         return
       }
-      setCategories("13000")
+      setCategories(ALL_RESTAURANTS_CODE)
     }
     const handleVeganChange = () => {
       setVegan(!vegan)
@@ -76,7 +112,7 @@ export default function Main() {
         setCategories("13377")
         return
       }
-      setCategories("13000")
+      setCategories(ALL_RESTAURANTS_CODE)
     }
 
 
@@ -190,6 +226,23 @@ export default function Main() {
       
       <Portal>
         <Modal visible={filterVisible} onDismiss={() => setFiltersVisible(false)} contentContainerStyle={styles.filterModal}>
+        <List.Accordion title={'Sort By'}>
+            <Checkbox.Item 
+              label='Distance'
+              status={distance ? 'checked' : 'unchecked'}
+              onPress={handleChangeDistance}
+            />
+            <Checkbox.Item 
+              label='Rating'
+              status={rating ? 'checked' : 'unchecked'}
+              onPress={handleChangeRating}
+            />
+            <Checkbox.Item 
+              label='Relevance'
+              status={relevance ? 'checked' : 'unchecked'}
+              onPress={handleChangeRelevance}
+            />
+          </List.Accordion>
           <Checkbox.Item
             status={withMenusOnly ? 'checked' : 'unchecked'}
             onPress={() => {

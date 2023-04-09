@@ -79,8 +79,6 @@ export default function Main() {
       }
     }
 
-
-
     const handleHalalChange = () => {
       setHalal(!halal)
       if(!halal){
@@ -114,7 +112,6 @@ export default function Main() {
       }
       setCategories(ALL_RESTAURANTS_CODE)
     }
-
 
     useEffect(() => {(async () => {
       try{
@@ -182,7 +179,7 @@ export default function Main() {
               console.log(e.response.data)
             }
             if(withMenusOnly.length>4){
-              break
+              return
             }
           }
           console.log("results with menu: ", resultsWithMenu)

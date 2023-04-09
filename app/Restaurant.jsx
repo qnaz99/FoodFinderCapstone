@@ -63,21 +63,18 @@ function Restaurant({ route, navigation }) {
   
   const [menu, setMenu] = useState([
     {
-      id: 1,
       name: 'Burger',
-      price: '$5.99',
+      prices: '$5.99',
       description: 'A juicy burger with all the fixings.',
       quantity: 0,
     },
     {
-      id: 2,
       name: 'Fries',
       price: '$2.99',
       description: 'Crispy golden fries.',
       quantity: 0,
     },
     {
-      id: 3,
       name: 'Soda',
       price: '$1.99',
       description: 'Your choice of refreshing soda.',
@@ -145,11 +142,11 @@ function Restaurant({ route, navigation }) {
     <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
     {menuData.map((item) => (  
       <List.Accordion title={item.name}>
-        {menu.map((item) => (
+        {item.entries.items[0].entries.items.map((items) => (
           <List.Item
-            key={item.id}
-            title={item.name}
-            description={item.price}
+            key={items.id}
+            title={items.name}
+            description={items.price}
             onPress={() => handleAddToCart(item)}
           />
         ))}

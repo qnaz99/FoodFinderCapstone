@@ -12,11 +12,9 @@ export default function LoginButton(props) {
         <TouchableOpacity onPress={props.onPress} style={{backgroundColor:props.backgroundColor, borderRadius: 9, height:Dimensions.get('window').height * 0.06 }}>
             <View style={{flexDirection: 'row', paddingTop:Dimensions.get('window').height * 0.015}}>
                 <Icon name={props.name} color={props.iconColor} size={30} style={{paddingLeft:10}}></Icon>
-                <Link href='/Main'>
-                <Text style={{ color: props.textColor}}>
+                <Text style={{ color: props.textColor, paddingLeft:10, paddingTop:5}}>
                     {props.text}
                 </Text>
-                </Link>
             </View>
         </TouchableOpacity>
     )   

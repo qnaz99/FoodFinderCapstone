@@ -1,16 +1,15 @@
-import React, { useCallback, useRef, useState, useEffect, useMemo, Component, createRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FlatList, StyleSheet, Text, View, Image, ImageBackground, Dimensions, Linking,
   } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import MapView, { Marker, Region, hello } from 'react-native-maps';
-import { Searchbar, Modal } from 'react-native-paper';
+import MapView, { Marker } from 'react-native-maps';
+import { Checkbox, Modal, Portal, IconButton, Searchbar, Provider  } from 'react-native-paper';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { Link } from "expo-router";
 import { useNavigation } from "expo-router";
 import Restaurant from './Restaurant.jsx';
-import { FOURSQUARE_API_KEY  } from "@env";
+import { FOURSQUARE_API_KEY, geolocationDbUrl, foursquareBasePath, FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET } from "@env";
 
 const ItemSeparator = ({ title }) => (
   <View
@@ -39,6 +38,9 @@ export default function Main() {
     const [latitudeDelta, setLatitudeDelta] = useState(0.0922);
     const [longitudeDelta, setLongitudeDelta] = useState(0.0421);
     const [sort, setSort] = useState("distance");
+    const [withMenusOnly, setWithMenusOnly] = useState(false);
+    const [filterVisible, setFiltersVisible] = useState(false);
+    const [menus, setMenus] = useState([]);
 
     useEffect(() => {(async () => {
       try{
@@ -52,7 +54,7 @@ export default function Main() {
         
       if (latitude && longitude) return;
 
-      const response = await axios.get("https://geolocation-db.com/json/");
+      const response = await axios.get(geolocationDbUrl);
       if (response.data && response.data.latitude && response.data.longitude) {
           setLatitude(response.data.latitude);
           setLongitude(response.data.longitude);  
@@ -73,32 +75,51 @@ export default function Main() {
           query: text,
           ll: `${latitude},${longitude}`,
           sort,
-          limit: 5,
+          limit: 50,
           categories
         }
       }
-      const response = await axios.get("https://api.foursquare.com/v3/places/search", options);
-      // {
-      //   headers: {
-      //       Authorization: `Bearer ${FOURSQUARE_API_KEY}`
-      //   },
-      //   params: {
-      //       term: text,
-      //       latitude: latitude,
-      //       longitude: longitude,
-      //       categories: ['restaurants', 'bars'],
-      //       radius: 5000,
-      //       limit: 5
-      //   }
-      // });
+      const response = await axios.get(foursquareBasePath, options);
       if(response.data.results){
-          setResults(response.data.results)
-          // console.log("results: ", results[0].coordinates)
+        const resultsWithMenu = []
+        const menusFound = []
+          if(!withMenusOnly){
+            setResults(response.data.results.slice(0, 5))
+            return
+          }
+          for(const result of response.data.results){
+            const menuOptions = {
+              params: {
+                client_id: FOURSQUARE_CLIENT_ID,
+                client_secret: FOURSQUARE_CLIENT_SECRET,
+                v: '20120609'
+              }
+            }
+            try{
+              const menuResponse = await axios.get(`https://api.foursquare.com/v2/venues/${result.fsq_id}/menu`, menuOptions)
+              // console.log(menuResponse.data.response.menu.menus.count)
+              if (menuResponse.data && menuResponse.data.response.menu.menus.count > 0) {
+                resultsWithMenu.push(result)
+                menusFound.push(menuResponse.data.response.menu.menus.items)
+              }
+            }
+            catch(e){
+              console.log(e.response.data)
+            }
+            if(withMenusOnly.length>4){
+              break
+            }
+          }
+          console.log("results with menu: ", resultsWithMenu)
+          setResults(resultsWithMenu)
+          setMenus(menusFound)
       }
     }
 
   return (
+    <Provider>
     <View style={styles.container}>
+      <View style={{paddingLeft: Dimensions.get('window').width * 0.7 }}>
         <Searchbar 
           style={styles.searchbar} 
           placeholder={"What are you craving?"} 
@@ -108,11 +129,43 @@ export default function Main() {
             getResults(text)
           }}
         />
+      </View>
+      <View style={{paddingLeft: Dimensions.get('window').width * 0.99, }}>
+        <IconButton 
+          icon='menu'
+          backgroundColor='white'
+
+          size={35}
+          onPress={() => navigation.navigate('Sidebar')}
+          style={styles.profileIcon}
+        />
+      </View>
+      
+      <IconButton
+        icon='filter-menu'
+        style={styles.filterIcon}
+        size={35}
+        backgroundColor='white'
+        onPress={() => setFiltersVisible(!filterVisible)}
+      />
+      
+      <Portal>
+        <Modal visible={filterVisible} onDismiss={() => setFiltersVisible(false)} contentContainerStyle={styles.filterModal}>
+          <Checkbox.Item
+            status={withMenusOnly ? 'checked' : 'unchecked'}
+            onPress={() => setWithMenusOnly(!withMenusOnly)}
+            label="Only show restaurants with menu data"
+          >
+          </Checkbox.Item>
+        </Modal>
+      </Portal>
+      
+
         
       {latitude && longitude && <MapView
         
         provider="google"
-        style={{ flex: 1, width: '100%', zIndex: -1 }}
+        style={styles.map}
         googleMapsApiKey={"AIzaSyA3Tm7zj5CX0sEhD_wJdp6KXv2DK_LAHZc"}
         region={{latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}}
         showsUserLocation={true}
@@ -138,7 +191,7 @@ export default function Main() {
         {results[4] && <Marker coordinate={{latitude: results[4].geocodes.main.latitude-(latitudeDelta/35), longitude:results[4].geocodes.main.longitude}}><Text style={{fontWeight: 'bold'}}>{results[4].name}</Text></Marker>}
 
       </MapView>}
-      { results[0] && results[1] && results[2] && results[3] && results[4] && 
+      { results[0] && 
           <FlatList
             style={{position: 'absolute', top: Dimensions.get('window').height * 0.13, zIndex: 1}}
             data={results}
@@ -150,6 +203,7 @@ export default function Main() {
 	        />  }
       <StatusBar style="auto" />
     </View>
+    </Provider>
   );
 } 
 
@@ -160,10 +214,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center', 
   },
-  searchbar:{
+  searchbar: {
     width: Dimensions.get('window').width * 0.8, 
     border: '5px solid white',
     position: 'absolute',
     top: Dimensions.get('window').height * 0.07
+  },
+  map: {
+    flex: 1, 
+    width: '100%', 
+    zIndex: -1 
+  },
+  profileIcon: {
+    position: 'absolute',
+    top: Dimensions.get('window').height * 0.07,
+  },
+  filterIcon: {
+    position: 'absolute',
+    bottom: Dimensions.get('window').height * 0.01,
+    right: Dimensions.get('window').width * 0.03,
+    zIndex: 3
+  },
+  filterModal: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    padding: 20,
+    width: Dimensions.get('window').width * 1,
+    height: Dimensions.get('window').height * 0.4,
+    bottom: -Dimensions.get('window').height * 0.05,
+    marginBottom: 0
   }
 });

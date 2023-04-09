@@ -8,7 +8,7 @@ import {
 } from 'react-native-paper';
 import axios from 'axios';
 import { useSearchParams } from "expo-router";
-import { FOURSQUARE_API_KEY  } from "@env";
+import { FOURSQUARE_API_KEY, geolocationDbUrl, foursquareBasePath, FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET } from "@env";
 
 
 
@@ -46,21 +46,23 @@ function Restaurant({ route, navigation }) {
   const { user, extra } = useSearchParams();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
-  useEffect(() => {(async () => {
-    if(id){
-      console.log("id: ", id)
-      const options = {
-        headers: {
-          accept: 'application/json',
-          Authorization: FOURSQUARE_API_KEY
-        },
-        params: {
-          fsq_id: id,
-        }
-      };
-      const response = await axios.get("https://api.foursquare.com/v3/places/match", options);
+
+  const getMenu = async () => {
+    const menuOptions = {
+      params: {
+        client_id: FOURSQUARE_CLIENT_ID,
+        client_secret: FOURSQUARE_CLIENT_SECRET,
+        v: '20120609'
+      }
     }
-  })();}, []);
+    try{
+      const menuResponse = await axios.get(`https://api.foursquare.com/v2/venues/${id}/menu`, menuOptions)
+      // setMenu(menuResponse.data.response.menu.menus.items)
+    }
+    catch(e){
+      console.log(e.response.data)
+    }
+  }
 
   
   const [menu, setMenu] = useState([
@@ -86,6 +88,9 @@ function Restaurant({ route, navigation }) {
       quantity: 0,
     },
   ]);
+  useEffect(() => {
+    getMenu()
+  }, [])
 
   const handleSelectItem = (item) => {
     const updatedSelectedItems = [...selectedItems];
@@ -137,20 +142,26 @@ function Restaurant({ route, navigation }) {
 
   const renderMenu = () => (
     <>
-      <List.Section>
-        <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
-        {menu.map((item) => (
-          <List.Item
-            key={item.id}
-            title={item.name}
-            description={item.price}
-            onPress={() => handleAddToCart(item)}
-          />
-        ))}
-      </List.Section>
-      <Button mode="contained" onPress={handleCheckout}>
-        Checkout
-      </Button>
+    <Text/>
+    <Text/>
+    <Text/>
+    <Text/>
+    <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
+    <List.Accordion>
+      {menu.map((item) => (
+        <List.Item
+          key={item.id}
+          title={item.name}
+          description={item.price}
+          onPress={() => handleAddToCart(item)}
+        />
+      ))}
+    </List.Accordion>
+
+    <Button mode="contained" onPress={handleCheckout}>
+      Checkout
+    </Button>
+    {/* </List.Accordion> */}
     </>
   );
   const renderSelectedItem = () => (

@@ -12,8 +12,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Link } from "expo-router";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import  Main  from './Main.jsx';
+import Main  from './Main.jsx';
 import Restaurant from './Restaurant.jsx';
+import { Sidebar } from './Sidebar.jsx';
+import { useNavigation } from "expo-router";
+
+
 
 
 
@@ -27,6 +31,7 @@ SplashScreen.preventAutoHideAsync();
 WebBrowser.maybeCompleteAuthSession();
 
 function Login() {
+  const navigation = useNavigation();
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_GUID,
     iosClientId: '276689317757-pl1dm02l981r5cll4kvq5p5f0sndatkn.apps.googleusercontent.com',
@@ -77,9 +82,9 @@ function Login() {
           <Text style={styles.logoText}>FoodFinder</Text>
           
           <View style={styles.button}>
-          <LoginButton name="google" iconColor="black" text="Login with Google" backgroundColor="white" textColor="blue" />
+            <LoginButton name="google" iconColor="black" text="Login with Google" backgroundColor="white" textColor="blue" onPress={() => promptAsync()}/>
             <Text></Text>
-            <LoginButton name="facebook" iconColor="white" text="Login with Facebook" backgroundColor="#3b5998" textColor="white" onPress={() => alert('Not set up')} />
+            <LoginButton name="facebook" iconColor="white" text="Login with Facebook" backgroundColor="#3b5998" textColor="white" onPress={() => navigation.navigate('Main')} />
             <Text></Text>
             <LoginButton name="apple" iconColor="white" text="Login with Apple" backgroundColor="black" textColor="white" onPress={() => alert('Not set up')} />
           </View>
@@ -118,9 +123,11 @@ export default function App() {
       <Stack.Navigator screenOptions={{
         headerShown: false
       }}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="Restaurant" component={Restaurant} />
+        <Stack.Screen name="Login" component={ Login } />
+        <Stack.Screen name="Main" component={ Main } />
+        <Stack.Screen name="Restaurant" component={ Restaurant } />
+        <Stack.Screen name="Sidebar" component={ Sidebar } />
+
       </Stack.Navigator>
     
   );

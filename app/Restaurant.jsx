@@ -10,9 +10,6 @@ import axios from 'axios';
 import { useSearchParams } from "expo-router";
 import { FOURSQUARE_API_KEY, geolocationDbUrl, foursquareBasePath, FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET } from "@env";
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -23,7 +20,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
-
   quantityButton: {
     width: 32,
     height: 32,
@@ -33,12 +29,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-
   checkoutButton: {
     marginTop: 16,
     backgroundColor: 'blue',
   },
-
 });
 
 function Restaurant({ route, navigation }) {
@@ -46,6 +40,7 @@ function Restaurant({ route, navigation }) {
   const { user, extra } = useSearchParams();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [menuData, setMenuData] = useState([]);
 
   const getMenu = async () => {
     const menuOptions = {
@@ -57,7 +52,7 @@ function Restaurant({ route, navigation }) {
     }
     try{
       const menuResponse = await axios.get(`https://api.foursquare.com/v2/venues/${id}/menu`, menuOptions)
-      // setMenu(menuResponse.data.response.menu.menus.items)
+      setMenuData(menuResponse.data.response.menu.menus.items)
     }
     catch(e){
       console.log(e.response.data)
@@ -147,16 +142,18 @@ function Restaurant({ route, navigation }) {
     <Text/>
     <Text/>
     <List.Subheader onPress={() => navigation.goBack()}>Back</List.Subheader>
-    <List.Accordion>
-      {menu.map((item) => (
-        <List.Item
-          key={item.id}
-          title={item.name}
-          description={item.price}
-          onPress={() => handleAddToCart(item)}
-        />
-      ))}
-    </List.Accordion>
+    { menuData.map((item) => (  
+      <List.Accordion title={item.name}>
+        {menu.map((item) => (
+          <List.Item
+            key={item.id}
+            title={item.name}
+            description={item.price}
+            onPress={() => handleAddToCart(item)}
+          />
+        ))}
+      </List.Accordion>
+    ))}
 
     <Button mode="contained" onPress={handleCheckout}>
       Checkout

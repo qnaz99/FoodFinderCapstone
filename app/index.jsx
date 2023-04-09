@@ -33,9 +33,8 @@ WebBrowser.maybeCompleteAuthSession();
 function Login() {
   const navigation = useNavigation();
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: GOOGLE_GUID,
     iosClientId: '276689317757-pl1dm02l981r5cll4kvq5p5f0sndatkn.apps.googleusercontent.com',
-    expoClientId: '276689317757-pl1dm02l981r5cll4kvq5p5f0sndatkn.apps.googleusercontent.com'
+    expoClientId: '276689317757-0lseqcitvnussnbil3mfe9uhmfsu4ktd.apps.googleusercontent.com'
   });
   const [fontsLoaded] = useFonts({
     Allison: require('./../assets/fonts/Allison.ttf'),

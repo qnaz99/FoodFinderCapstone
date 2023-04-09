@@ -56,6 +56,7 @@ export default function Main() {
 
       const response = await axios.get(geolocationDbUrl);
       if (response.data && response.data.latitude && response.data.longitude) {
+          console.log("Using geolocationDb API")
           setLatitude(response.data.latitude);
           setLongitude(response.data.longitude);  
       }

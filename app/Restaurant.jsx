@@ -8,7 +8,7 @@ import {
 } from 'react-native-paper';
 import axios from 'axios';
 import { useSearchParams } from "expo-router";
-import { FOURSQUARE_API_KEY, geolocationDbUrl, foursquareBasePath, FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET } from "@env";
+import { FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET } from "@env";
 
 const styles = StyleSheet.create({
   container: {
@@ -41,6 +41,7 @@ function Restaurant({ route, navigation }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [menuData, setMenuData] = useState([]);
+  const [haveMenu, setHaveMenu] = useState(false);
 
   const getMenu = async () => {
     const menuOptions = {

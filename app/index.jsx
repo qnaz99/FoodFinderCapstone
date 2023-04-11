@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
-import LoginButton from '../assets/app/LoginButton';
+import LoginButton from '../assets/App/LoginButton';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { GOOGLE_GUID } from "@env"

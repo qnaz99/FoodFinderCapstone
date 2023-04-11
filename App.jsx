@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts } from 'expo-font'
 import { TouchableOpacity } from 'react-native';
 import LoginButton  from './assets/App/LoginButton.jsx';
+import 'expo-dev-client';
 
 export default function App() {
   const [fontsLoaded] = useFonts({

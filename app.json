@@ -5,16 +5,36 @@
       "bundler": "metro"
     },
     "name": "FoodFinder",
-    "plugins": [[
-      "expo-location",
-      {
-        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-      }
-    ]],
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "602966985064032",
+          "clientToken": "16e000f38d14322f98649f3f159b92c1",
+          "displayName": "FoodFinder"
+          
+        }
+      ]
+    ],
     "slug": "FoodFinder",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ios.foodFinder"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2841b009-7407-4951-a0b8-230c9b297659"
+      }
+    },
+    "android": {
+      "package": "com.ios.foodFinder"
     }
   }
 }

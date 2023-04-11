@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "FoodFinder",
+    "scheme": "foodfinder",
     "web": {
       "bundler": "metro"
     },

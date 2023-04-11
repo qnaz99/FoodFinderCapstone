@@ -16,6 +16,12 @@ import Main  from './Main.jsx';
 import Restaurant from './Restaurant.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { useNavigation } from "expo-router";
+import 'expo-dev-client'
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import React, { useEffect, useState } from 'react';
+
+///Facebook Login
+
 
 
 
@@ -31,6 +37,44 @@ SplashScreen.preventAutoHideAsync();
 WebBrowser.maybeCompleteAuthSession();
 
 function Login() {
+  //Facebook Login
+  const[initializing, setInitializing] = useState(true);
+  const[user, setUser] = useState();
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }   
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  },[]);
+
+  const signInWithFB = async () =>{
+    try{
+      await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
+      const data = await AccessToken.getCurrentAccessToken();
+      if(!data){
+        return;
+      }
+      const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
+      const auth = getAuth();
+      const response = await auth.signInWithCredential(auth, facebookCredential);
+      console.log(response);
+    }catch(e){
+      console.log(e);
+    }
+  }
+  const signOut = async () => {
+    try{
+      await firebase.auth().signOut();
+
+    }catch(e){
+      console.log(e);
+    }
+  }
+  if(initializing) return null;
+
+
   const navigation = useNavigation();
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: '276689317757-pl1dm02l981r5cll4kvq5p5f0sndatkn.apps.googleusercontent.com',
@@ -84,7 +128,8 @@ function Login() {
           <View style={styles.button}>
             <LoginButton name="google" iconColor="black" text="Login with Google" backgroundColor="white" textColor="blue" onPress={() => promptAsync()}/>
             <Text></Text>
-            <LoginButton name="facebook" iconColor="white" text="Login with Facebook" backgroundColor="#3b5998" textColor="white" onPress={() => navigation.navigate('Main')} />
+            <LoginButton name="facebook" iconColor="white" text="Login with Facebook" backgroundColor="#3b5998" textColor="white" 
+            onPress={signInWithFB} />
             <Text></Text>
             <LoginButton name="apple" iconColor="white" text="Login with Apple" backgroundColor="black" textColor="white" onPress={() => alert('Not set up')} />
           </View>
